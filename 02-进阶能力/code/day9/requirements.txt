@@ -1,0 +1,3 @@
+# day9 — Function Calling 智能助手
+# 使用 requests 调用 DeepSeek API
+requests>=2.31.0

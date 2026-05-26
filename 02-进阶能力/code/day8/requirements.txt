@@ -1,0 +1,5 @@
+# day8 — RAG 问答系统 & 向量检索
+# 使用 sentence-transformers 进行本地 Embedding
+# 使用 requests 调用 DeepSeek API
+requests>=2.31.0
+sentence-transformers>=2.2.0

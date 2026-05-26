@@ -1,0 +1,4 @@
+# day12 — 完整 AI 客服系统
+# 整合 RAG + Function Calling + 结构化输出 + 多轮对话
+# 使用 requests 调用 DeepSeek API
+requests>=2.31.0

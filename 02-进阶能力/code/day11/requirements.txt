@@ -1,0 +1,5 @@
+# day11 — 对话记忆（滑动窗口/摘要/向量）
+# 使用 requests 调用 DeepSeek API
+# 使用 sentence-transformers 做向量嵌入（可选，无则降级为伪嵌入）
+requests>=2.31.0
+sentence-transformers>=2.2.0

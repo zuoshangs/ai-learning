@@ -1,0 +1,5 @@
+# day10 — 结构化输出 & 简历提取
+# 使用 requests 调用 DeepSeek API
+# 使用 pydantic 做数据模型验证
+requests>=2.31.0
+pydantic>=2.5.0
