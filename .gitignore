@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Java build
+java/**/target/
+java/**/dependency-reduced-pom.xml
+
+# Data
+**/index_data/
+**/__pycache__/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Config
+feishu_state.json
+sync_to_nas.sh
+upload_to_feishu.py
+upload_to_feishu_drive.py
+check_*.py
+debug_*.py
+create_feishu_doc.py
+md_to_feishu.py
+
+# 构建产物（已追踪的通过 git rm --cached 移除）
+java/**/target/
+**/dependency-reduced-pom.xml
+**/*.class
+**/*.jar
+!java/pom.xml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
