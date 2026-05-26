@@ -26,8 +26,8 @@ debug_*.py
 create_feishu_doc.py
 md_to_feishu.py
 
-# 构建产物（已追踪的通过 git rm --cached 移除）
-java/**/target/
+# 构建产物
+**/target/
 **/dependency-reduced-pom.xml
 **/*.class
 **/*.jar
