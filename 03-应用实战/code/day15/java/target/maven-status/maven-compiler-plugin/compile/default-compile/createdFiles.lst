@@ -1,0 +1,11 @@
+knowledgebase/DocumentLoader.class
+knowledgebase/VectorStore$SearchResult.class
+knowledgebase/Document.class
+knowledgebase/Main.class
+knowledgebase/DocumentLoader$1.class
+knowledgebase/VectorStore$ScoredChunk.class
+knowledgebase/VectorStore.class
+knowledgebase/SimpleEmbedding.class
+knowledgebase/Config.class
+knowledgebase/VectorStore$ChunkIndex.class
+knowledgebase/QaEngine.class

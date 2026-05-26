@@ -1,0 +1,31 @@
+Sentence-Transformers 使用说明
+
+Sentence-Transformers 是一个用于生成句子、文本和图像嵌入的 Python 框架。
+它基于预训练的 Transformer 模型，可以生成高质量的语义向量表示。
+
+常用模型：
+1. all-MiniLM-L6-v2 - 轻量级模型，384维，速度快，适合大多数场景
+2. all-mpnet-base-v2 - 更高质量的模型，768维，速度较慢但精度更高
+3. multi-qa-MiniLM-L6-cos-v1 - 针对问答场景优化的模型
+
+基本用法：
+
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+embeddings = model.encode([
+    "这是第一个句子",
+    "这是第二个句子，语义相似"
+])
+
+相似度计算使用余弦相似度：
+from sklearn.metrics.pairwise import cosine_similarity
+similarity = cosine_similarity([embeddings[0]], [embeddings[1]])
+
+安装方法：
+pip install sentence-transformers
+
+如果需要使用国内镜像加速模型下载：
+export HF_ENDPOINT=https://hf-mirror.com
+
+第一次运行时模型会自动下载到本地缓存目录。

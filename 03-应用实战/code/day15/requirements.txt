@@ -1,0 +1,23 @@
+# Personal Knowledge Base Q&A System - 依赖清单
+# 安装命令: pip install -r requirements.txt
+
+# === 核心依赖 ===
+
+# LLM API 调用（OpenAI 兼容接口）
+openai>=1.0.0
+
+# 文本嵌入与语义搜索
+sentence-transformers>=2.2.0
+
+# 科学计算（向量存储与相似度计算）
+numpy>=1.24.0
+
+# === 可选依赖（自动降级） ===
+
+# Transformer 模型支持（sentence-transformers 的底层依赖）
+torch>=2.0.0
+
+# === 开发/文档依赖 ===
+
+# Markdown 解析（用于文档加载）
+markdown>=3.0.0
