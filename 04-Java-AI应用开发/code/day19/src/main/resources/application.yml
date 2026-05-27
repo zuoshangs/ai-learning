@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: spring-ai-tools
+  ai:
+    openai:
+      base-url: https://api.deepseek.com
+      api-key: ${DEEPSEEK_API_KEY}
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.3
+          max-tokens: 2000
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.ai: DEBUG
