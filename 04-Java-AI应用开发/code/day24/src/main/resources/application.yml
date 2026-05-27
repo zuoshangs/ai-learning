@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: spring-ai-hybrid-search
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/airag
+    username: spring
+    password: spring123
+    driver-class-name: org.postgresql.Driver
+
+  ai:
+    openai:
+      base-url: https://api.deepseek.com
+      api-key: ${DEEPSEEK_API_KEY}
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.1
+      embedding:
+        enabled: false
+
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        enabled: false
+      embedding:
+        options:
+          model: qwen2.5:0.5b
+
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 896
+        remove-existing-vector-store-table: false
+        initialize-schema: false
+
+logging:
+  level:
+    com.ai.learning: INFO
+    org.springframework.ai: WARN
