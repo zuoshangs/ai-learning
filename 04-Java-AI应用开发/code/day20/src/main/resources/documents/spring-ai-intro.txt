@@ -1,0 +1,35 @@
+# Spring AI 框架介绍
+
+Spring AI 是 Spring 生态系统中的官方 AI 框架，旨在为 Java 开发者提供 AI 应用开发的标准化接口。
+
+## 核心特性
+
+1. **ChatClient**：声明式聊天客户端，支持同步、流式和函数式编程风格
+2. **提示词模板**：支持参数化提示词模板，类似 Java 的 StringTemplate
+3. **模型支持**：支持 OpenAI、Anthropic、Google Gemini、DeepSeek 等多种模型
+4. **结构化输出**：自动将 AI 回复映射为 Java 对象（DTO/Record）
+5. **工具调用**：通过 @Tool 注解注册工具方法，AI 自动调用
+6. **RAG 支持**：内置 QuestionAnswerAdvisor 和向量数据库集成
+7. **Embedding**：支持多种 Embedding 模型的 API
+8. **向量数据库**：支持 PgVector、Milvus、Weaviate、Redis 等多种向量存储
+
+## RAG 架构
+
+RAG（Retrieval-Augmented Generation）是目前最主流的 AI 知识库方案。核心流程：
+
+1. **文档加载**：加载 PDF、Word、TXT 等格式的文档
+2. **文本切分**：将文档切分为固定大小且有重叠区的小块
+3. **向量化**：调用 Embedding API 将文本转为向量
+4. **存储**：将向量和原始文本存入向量数据库
+5. **检索**：用户提问时，将 Query 转为向量并检索最相关的文档块
+6. **增强**：检索到的文档块 + 用户问题 拼接成提示词
+7. **生成**：大模型基于上下文 + 问题 生成最终回答
+
+## PgVector
+
+PgVector 是 PostgreSQL 的向量数据库扩展，支持：
+
+- **精确检索**：通过精确索引查找最近邻
+- **近似检索**：IVFFlat（倒排文件）和 HNSW（分层可导航小世界）索引
+- **距离类型**：L2（欧几里得）、IP（内积）、COSINE（余弦）
+- **混合搜索**：结合 SQL WHERE 条件的向量检索（元数据过滤）
