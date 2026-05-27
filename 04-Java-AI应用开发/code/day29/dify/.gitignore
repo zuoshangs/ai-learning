@@ -1,0 +1,2 @@
+# Ignore Docker volumes (runtime data)
+volumes/
