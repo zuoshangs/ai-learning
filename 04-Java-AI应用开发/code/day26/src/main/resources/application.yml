@@ -1,0 +1,42 @@
+server:
+  port: 8088
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.autoconfigure.openai.OpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.autoconfigure.vectorstore.pgvector.PgVectorStoreAutoConfiguration
+  ai:
+    openai:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.1
+    vectorstore:
+      pgvector:
+        initialize-schema: false
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ailearning
+    username: aiuser
+    password: aipass
+    hikari:
+      maximum-pool-size: 5
+
+  # 异步任务线程池
+  task:
+    execution:
+      pool:
+        core-size: 2
+        max-size: 4
+        queue-capacity: 100
+
+logging:
+  level:
+    com.ai.learning.knowledge: INFO
+    org.springframework.ai: WARN
