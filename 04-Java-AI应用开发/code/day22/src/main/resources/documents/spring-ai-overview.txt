@@ -1,0 +1,7 @@
+Spring AI 是一个面向人工智能应用的 Spring 生态框架，它的核心理念是将大语言模型（LLM）的能力以 Spring 开发者熟悉的方式集成到 Java 应用中。与传统 AI 框架不同，Spring AI 遵循了 Spring 一贯的"约定优于配置"原则，让 Java 开发者能够以最低的学习成本快速构建 AI 应用。
+在实际使用中，Spring AI 支持多种大语言模型提供商，包括 OpenAI 的 GPT 系列、Azure OpenAI、Ollama 本地模型、Amazon Bedrock、Google Vertex AI 等。开发者只需要切换依赖和配置文件中的几行内容，业务代码几乎不需要做任何修改，这种设计极大降低了模型切换的成本。
+在提示词工程方面，Spring AI 提供了 PromptTemplate，这类似于 Spring 中的 JdbcTemplate。开发者可以定义包含占位符的提示词模板，然后通过传入参数来动态填充，完全告别了原始的字符串拼接方式。同时，框架还支持结构化输出，能够自动将 AI 的文本响应解析为 Java 对象，这通过 BeanOutputConverter 实现。
+在 RAG（检索增强生成）方面，Spring AI 提供了一套完整的数据处理管线。从文档加载开始，框架支持多种文档格式的读取，包括 PDF、Word、HTML 和纯文本。加载后的文档可以通过内置的 TokenTextSplitter 进行切分，然后通过 Embedding API 向量化后存入向量数据库。在查询时，框架会自动从向量库中检索相关文档块，并将其作为上下文提供给大模型，最终生成基于事实的回答。
+Spring AI 还深度集成了多种向量数据库，包括 PgVector（PostgreSQL 扩展）、Redis、MongoDB Atlas、Chroma、Pinecone、Qdrant 和 Weaviate 等。这使得开发者可以根据自己的业务场景选择最合适的存储方案。
+在工具调用方面，Spring AI 通过 @Tool 注解将 Java 方法暴露为 AI 可以主动调用的工具。例如，开发者可以定义一个获取天气的 @Tool 方法，当 AI 在对话中遇到天气相关的问题时，会自动调用这个方法获取实时数据，然后再基于这些数据生成回答。
+总的来说，Spring AI 是一个专门为 Java 开发者设计的 AI 框架，它让 Java 开发者能够在不学习 Python 的前提下，充分利用大语言模型的能力，构建各种智能应用，包括智能客服、知识库问答、文档分析等场景。

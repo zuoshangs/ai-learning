@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: spring-ai-doc-pipeline
+
+  ai:
+    openai:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat
+      embedding:
+        options:
+          model: deepseek-chat
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.ai.learning: INFO
+    org.springframework.ai: INFO

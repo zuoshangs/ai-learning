@@ -1,0 +1,37 @@
+{
+  "framework": "Spring AI",
+  "version": "1.0.0-M6",
+  "description": "AI 应用框架 for Java/Spring",
+  "features": [
+    "Multi-model support (OpenAI, Ollama, Bedrock, etc.)",
+    "PromptTemplate for prompt engineering",
+    "Structured output with BeanOutputConverter",
+    "Vector database integration (PgVector, Redis, Chroma, etc.)",
+    "RAG pipeline with DocumentReader → TokenTextSplitter → VectorStore",
+    "Tool calling via @Tool annotation",
+    "Chat memory with ChatMemory interface"
+  ],
+  "supportedVectorDatabases": [
+    "PgVector",
+    "Redis",
+    "MongoDB Atlas",
+    "Chroma",
+    "Pinecone",
+    "Qdrant",
+    "Weaviate",
+    "Milvus"
+  ],
+  "supportedModels": [
+    "OpenAI GPT-4 / GPT-3.5",
+    "Azure OpenAI",
+    "Ollama (local)",
+    "Amazon Bedrock",
+    "Google Vertex AI",
+    "HuggingFace"
+  ],
+  "config": {
+    "javaVersion": 21,
+    "springBootVersion": "3.4.4",
+    "springAiVersion": "1.0.0-M6"
+  }
+}
