@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: react-agent
+  ai:
+    openai:
+      base-url: https://api.deepseek.com
+      api-key: ${DEEPSEEK_API_KEY}
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.3
+          max-tokens: 2000
+    # 排除嵌入自动配置 — DeepSeek 不支持 Embedding API
+    embedding:
+      enabled: false
+
+# 排除 OpenAiEmbeddingAutoConfiguration
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.autoconfigure.openai.OpenAiEmbeddingAutoConfiguration
+
+server:
+  port: 8089
+
+logging:
+  level:
+    org.springframework.ai: DEBUG
+    com.example.react: DEBUG
