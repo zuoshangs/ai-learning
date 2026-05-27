@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: spring-ai-demo
+
+  ai:
+    openai:
+      # 从环境变量读取 API Key（永远不要硬编码！）
+      api-key: ${DEEPSEEK_API_KEY}
+      # DeepSeek API 地址（兼容 OpenAI 协议）
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          # 模型名称
+          model: deepseek-chat
+          # 创造性：0=确定  1=平衡  2=完全随机
+          temperature: 0.7
+          # 单次最大输出 Token 数
+          max-tokens: 1024
+
+server:
+  port: 8080
