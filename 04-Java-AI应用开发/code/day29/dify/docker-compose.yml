@@ -1,0 +1,131 @@
+version: '3.8'
+
+services:
+  # ─── 数据库 ──────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: dify-pg
+    environment:
+      POSTGRES_USER: dify
+      POSTGRES_PASSWORD: dify123
+      POSTGRES_DB: dify
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./volumes/pgvector:/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dify"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── 缓存/队列 ───────────────────────────────────
+  redis:
+    image: redis:6-alpine
+    container_name: dify-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./volumes/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ─── API 服务 ────────────────────────────────────
+  api:
+    image: langgenius/dify-api:1.14.2
+    container_name: dify-api
+    restart: always
+    environment:
+      MODE: api
+      SECRET_KEY: dify-secret-key-for-dev-123456
+      INIT_PASSWORD: Dify123!
+      DEPLOY_ENV: PRODUCTION
+      DB_USERNAME: dify
+      DB_PASSWORD: dify123
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: dify
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      REDIS_DB: 0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      STORAGE_TYPE: local
+      STORAGE_LOCAL_PATH: /app/api/storage
+      LOG_LEVEL: INFO
+      DEBUG: "false"
+      FLASK_DEBUG: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./volumes/storage:/app/api/storage:rw
+    ports:
+      - "5001:5001"
+
+  # ─── Worker（异步任务） ───────────────────────────
+  worker:
+    image: langgenius/dify-api:1.14.2
+    container_name: dify-worker
+    restart: always
+    environment:
+      MODE: worker
+      SECRET_KEY: dify-secret-key-for-dev-123456
+      INIT_PASSWORD: Dify123!
+      DEPLOY_ENV: PRODUCTION
+      DB_USERNAME: dify
+      DB_PASSWORD: dify123
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: dify
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      REDIS_DB: 0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      STORAGE_TYPE: local
+      STORAGE_LOCAL_PATH: /app/api/storage
+      LOG_LEVEL: INFO
+      DEBUG: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./volumes/storage:/app/api/storage:rw
+
+  # ─── Web 前端 ────────────────────────────────────
+  web:
+    image: langgenius/dify-web:1.14.2
+    container_name: dify-web
+    restart: always
+    environment:
+      CONSOLE_API_URL: ""
+      APP_API_URL: ""
+      NEXT_PUBLIC_SENTRY_DSN: ""
+      NEXT_PUBLIC_TEXT_GENERATION_TIMEOUT_MS: "60000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  # ─── Sandbox（工具代码执行） ──────────────────────
+  sandbox:
+    image: langgenius/dify-sandbox:0.2.15
+    container_name: dify-sandbox
+    restart: always
+    environment:
+      API_KEY: dify-sandbox-key
+      GIN_MODE: release
+      WORKER_TIMEOUT: 15
+
+networks:
+  default:
+    name: dify-network
