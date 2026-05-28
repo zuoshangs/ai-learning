@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理仪表盘 - AI 智能客服</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1419;
+            color: #e7e9ea;
+            min-height: 100vh;
+        }
+
+        /* === Header === */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e2a3a;
+        }
+        .header h1 { font-size: 20px; font-weight: 600; }
+        .header h1 span { color: #4fc3f7; }
+        .header .links { display: flex; gap: 12px; align-items: center; }
+        .header .links a {
+            color: #8899aa;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .header .links a:hover { color: white; background: rgba(255,255,255,0.1); }
+        .header .links a.active { color: #4fc3f7; background: rgba(79,195,247,0.1); }
+
+        /* === Layout === */
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        /* === Stats Row === */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #1a2332;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #253040;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: default;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .stat-card .icon { font-size: 24px; margin-bottom: 8px; }
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: #8899aa;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-card .sub {
+            font-size: 11px;
+            color: #4fc3f7;
+            margin-top: 4px;
+        }
+        .stat-card.blue .value { color: #4fc3f7; }
+        .stat-card.green .value { color: #66bb6a; }
+        .stat-card.orange .value { color: #ffa726; }
+        .stat-card.purple .value { color: #ab47bc; }
+        .stat-card.red .value { color: #ef5350; }
+        .stat-card.cyan .value { color: #26c6da; }
+        .stat-card.pink .value { color: #ec407a; }
+
+        /* === Section Headers === */
+        .section { margin-bottom: 24px; }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #8899aa;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #253040;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* === Panel Grid === */
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .panel {
+            background: #1a2332;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #253040;
+        }
+        .panel h3 {
+            font-size: 14px;
+            color: #8899aa;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        /* === Metric Rows === */
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e2a3a;
+            font-size: 13px;
+        }
+        .metric:last-child { border-bottom: none; }
+        .metric .key { color: #8899aa; }
+        .metric .val { color: #e7e9ea; font-weight: 500; font-family: 'SF Mono', 'Cascadia Code', monospace; }
+        .metric .val.green { color: #66bb6a; }
+        .metric .val.orange { color: #ffa726; }
+        .metric .val.red { color: #ef5350; }
+        .metric .val.blue { color: #4fc3f7; }
+
+        /* === Mini Bar Charts === */
+        .mini-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+        .mini-bar .bar-label {
+            width: 70px;
+            font-size: 11px;
+            color: #8899aa;
+            text-align: right;
+        }
+        .mini-bar .bar-track {
+            flex: 1;
+            height: 16px;
+            background: #253040;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .mini-bar .bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+        .mini-bar .bar-fill.blue { background: linear-gradient(90deg, #4fc3f7, #29b6f6); }
+        .mini-bar .bar-fill.green { background: linear-gradient(90deg, #66bb6a, #43a047); }
+        .mini-bar .bar-fill.orange { background: linear-gradient(90deg, #ffa726, #f57c00); }
+        .mini-bar .bar-fill.red { background: linear-gradient(90deg, #ef5350, #d32f2f); }
+        .mini-bar .bar-fill.purple { background: linear-gradient(90deg, #ab47bc, #7b1fa2); }
+        .mini-bar .bar-value {
+            width: 36px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'SF Mono', monospace;
+        }
+
+        /* === Tab System === */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            background: #1a2332;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #253040;
+        }
+        .tabs button {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            color: #8899aa;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .tabs button:hover { background: rgba(255,255,255,0.05); }
+        .tabs button.active {
+            color: #4fc3f7;
+            border-bottom-color: #4fc3f7;
+            background: rgba(79,195,247,0.05);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* === Loading === */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #556677;
+        }
+        .loading .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid #253040;
+            border-top-color: #4fc3f7;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* === Status Bar === */
+        .status-bar {
+            display: flex;
+            gap: 20px;
+            padding: 10px 24px;
+            background: #0d1421;
+            border-top: 1px solid #1e2a3a;
+            font-size: 12px;
+            color: #556677;
+            flex-wrap: wrap;
+        }
+        .status-bar span { display: flex; align-items: center; gap: 4px; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+        .dot.green { background: #66bb6a; }
+        .dot.yellow { background: #ffa726; }
+        .dot.red { background: #ef5350; }
+
+        /* === Cost History Chart === */
+        .cost-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 80px;
+            padding: 8px 0;
+        }
+        .cost-bar {
+            flex: 1;
+            min-width: 8px;
+            border-radius: 4px 4px 0 0;
+            background: linear-gradient(180deg, #4fc3f7, #1a2332);
+            transition: height 0.5s ease;
+            position: relative;
+        }
+        .cost-bar:hover { background: linear-gradient(180deg, #29b6f6, #1a2332); }
+
+        /* === Refresh === */
+        .refresh-btn {
+            background: #1a2332;
+            border: 1px solid #253040;
+            color: #8899aa;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .refresh-btn:hover { background: #253040; color: white; }
+        .auto-refresh { font-size: 11px; color: #556677; }
+
+        /* === Responsive === */
+        @media (max-width: 768px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .panel-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 8px; }
+            .header .links { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 <span>管理仪表盘</span></h1>
+        <div class="links">
+            <a href="/">💬 客服对话</a>
+            <a href="/kb">📚 知识库</a>
+            <a href="/tickets">🎫 工单管理</a>
+            <a href="/dashboard" class="active">📊 仪表盘</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats-row" id="statsRow">
+            <div class="loading"><div class="spinner"></div></div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="active" onclick="switchTab('overview')">📈 概览</button>
+            <button onclick="switchTab('chat')">💬 对话</button>
+            <button onclick="switchTab('cost')">💰 成本</button>
+            <button onclick="switchTab('system')">⚙ 系统</button>
+        </div>
+
+        <!-- Tab: Overview -->
+        <div id="tab-overview" class="tab-content active">
+            <div class="panel-grid">
+                <div class="panel" id="panelChat">
+                    <h3>💬 对话监控 <span style="float:right;font-size:11px;color:#556677;" id="chatTime"></span></h3>
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+                <div class="panel" id="panelTicket">
+                    <h3>🎫 工单概览</h3>
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+                <div class="panel" id="panelCache">
+                    <h3>⚡ 缓存效率</h3>
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+                <div class="panel" id="panelRateLimit">
+                    <h3>🔒 限流监控</h3>
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Chat -->
+        <div id="tab-chat" class="tab-content">
+            <div class="panel-grid">
+                <div class="panel">
+                    <h3>📋 对话详细指标</h3>
+                    <div id="chatMetrics">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>⏱ 响应时间分布</h3>
+                    <div id="responseTime">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>📊 知识库统计</h3>
+                    <div id="knowledgeStats">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Cost -->
+        <div id="tab-cost" class="tab-content">
+            <div class="panel-grid">
+                <div class="panel">
+                    <h3>💰 累计成本</h3>
+                    <div id="costSummary">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="panel" style="grid-column:span 2;">
+                    <h3>📈 小时成本趋势 (近24h)</h3>
+                    <div id="costChart">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>📋 按模型统计</h3>
+                    <div id="costByModel">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: System -->
+        <div id="tab-system" class="tab-content">
+            <div class="panel-grid">
+                <div class="panel">
+                    <h3>🖥 系统信息</h3>
+                    <div id="systemInfo">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>🧠 内存使用</h3>
+                    <div id="memoryInfo">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>🔧 管理操作</h3>
+                    <div style="padding: 12px;">
+                        <button onclick="clearCache()" style="background:#253040;border:1px solid #4fc3f7;color:#4fc3f7;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;">🗑 清除缓存</button>
+                        <p style="font-size:11px;color:#556677;margin-top:8px;">清除所有 LLM 响应缓存，释放内存。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar" id="statusBar">
+        <span><span class="dot green"></span> 系统运行中</span>
+        <span id="statActiveSessions">💬 0 活跃会话</span>
+        <span id="statActiveTickets">🎫 0 待处理工单</span>
+        <span id="statCacheHit">⚡ 缓存命中率: 0%</span>
+        <span id="statUptime">⏱ 启动时间: --</span>
+        <span style="margin-left:auto;">
+            <span class="auto-refresh" id="refreshInfo">自动刷新 10s</span>
+            <button class="refresh-btn" onclick="refreshAll()">⟳ 刷新</button>
+        </span>
+    </div>
+
+    <script>
+        let refreshInterval = setInterval(refreshAll, 10000);
+        let lastRefresh = 0;
+
+        function $(id) { return document.getElementById(id); }
+
+        function switchTab(name) {
+            document.querySelectorAll('.tabs button').forEach(b => {
+                b.classList.toggle('active', b.textContent.includes(
+                    {overview:'概览',chat:'对话',cost:'成本',system:'系统'}[name]));
+            });
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.toggle('active', el.id === 'tab-' + name);
+            });
+        }
+
+        async function refreshAll() {
+            lastRefresh = Date.now();
+            $('refreshInfo').textContent = '⟳ 刷新中...';
+
+            try {
+                const resp = await fetch('/api/dashboard/report');
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+
+                renderStats(data);
+                renderChatPanel(data);
+                renderTicketPanel(data);
+                renderCachePanel(data);
+                renderRateLimitPanel(data);
+                renderChatMetrics(data);
+                renderResponseTime(data);
+                renderKnowledgeStats(data);
+                renderCostSummary(data);
+                renderCostChart(data);
+                renderCostByModel(data);
+                renderSystemInfo(data);
+                renderMemoryInfo(data);
+                renderStatusBar(data);
+
+                const now = new Date();
+                $('chatTime').textContent = '最后更新: ' +
+                    now.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+                $('refreshInfo').textContent = '自动刷新 10s';
+            } catch (e) {
+                $('refreshInfo').textContent = '❌ 加载失败: ' + e.message;
+            }
+        }
+
+        // ==== Stats Row ====
+        function renderStats(data) {
+            const chat = data.chat || {};
+            const tickets = data.tickets || {};
+            const cache = data.cache || {};
+            const cost = data.cost || {};
+            const knowledge = data.knowledge || {};
+
+            $('statsRow').innerHTML = `
+                <div class="stat-card blue">
+                    <div class="icon">💬</div>
+                    <div class="value">${chat.activeSessions || 0}</div>
+                    <div class="label">活跃会话</div>
+                    <div class="sub">总计 ${chat.totalSessions || 0} 会话</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="icon">🎫</div>
+                    <div class="value">${tickets.pending + tickets.inProgress || 0}</div>
+                    <div class="label">待处理工单</div>
+                    <div class="sub">共 ${tickets.total || 0} 工单</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="icon">⚡</div>
+                    <div class="value">${cache.hitRate || '0%'}</div>
+                    <div class="label">缓存命中率</div>
+                    <div class="sub">${cache.hits || 0} 命中 / ${(cache.hits||0)+(cache.misses||0)} 请求</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="icon">📚</div>
+                    <div class="value">${knowledge.totalDocs || 0}</div>
+                    <div class="label">知识库文档</div>
+                    <div class="sub">${knowledge.categories || 0} 个分类</div>
+                </div>
+                <div class="stat-card pink">
+                    <div class="icon">📝</div>
+                    <div class="value">${chat.totalMessages || 0}</div>
+                    <div class="label">总消息数</div>
+                    <div class="sub">${chat.totalLlmCalls || 0} 次 LLM 调用</div>
+                </div>
+                <div class="stat-card cyan">
+                    <div class="icon">💰</div>
+                    <div class="value">$${cost.totalCostCents || '0.00¢'}</div>
+                    <div class="label">总成本</div>
+                    <div class="sub">$${cost.totalCostUsd || '0.0000'}</div>
+                </div>
+            `;
+        }
+
+        // ==== Chat Panel ====
+        function renderChatPanel(data) {
+            const c = data.chat || {};
+            $('panelChat').innerHTML = `
+                <div class="metric"><span class="key">活跃会话</span><span class="val blue">${c.activeSessions || 0}</span></div>
+                <div class="metric"><span class="key">历史会话总数</span><span class="val">${c.totalSessions || 0}</span></div>
+                <div class="metric"><span class="key">总消息数</span><span class="val">${c.totalMessages || 0}</span></div>
+                <div class="metric"><span class="key">LLM 调用次数</span><span class="val">${c.totalLlmCalls || 0}</span></div>
+                <div class="metric"><span class="key">总 Token 消耗</span><span class="val">${fmtNum(c.totalTokens || 0)}</span></div>
+                <div class="metric"><span class="key">总 LLM 耗时</span><span class="val">${fmtMs(c.totalLlmTimeMs || 0)}</span></div>
+                <div class="metric"><span class="key">平均响应时间</span><span class="val">${c.avgResponseTimeMs || 0}ms</span></div>
+            `;
+        }
+
+        // ==== Ticket Panel ====
+        function renderTicketPanel(data) {
+            const t = data.tickets || {};
+            const total = t.total || 1;
+            $('panelTicket').innerHTML = `
+                <div class="mini-bar">
+                    <span class="bar-label">待处理</span>
+                    <div class="bar-track"><div class="bar-fill orange" style="width:${(t.pending||0)/total*100}%"></div></div>
+                    <span class="bar-value" style="color:#ffa726;">${t.pending||0}</span>
+                </div>
+                <div class="mini-bar">
+                    <span class="bar-label">处理中</span>
+                    <div class="bar-track"><div class="bar-fill blue" style="width:${(t.inProgress||0)/total*100}%"></div></div>
+                    <span class="bar-value" style="color:#4fc3f7;">${t.inProgress||0}</span>
+                </div>
+                <div class="mini-bar">
+                    <span class="bar-label">已解决</span>
+                    <div class="bar-track"><div class="bar-fill green" style="width:${(t.resolved||0)/total*100}%"></div></div>
+                    <span class="bar-value" style="color:#66bb6a;">${t.resolved||0}</span>
+                </div>
+                <div class="mini-bar">
+                    <span class="bar-label">已关闭</span>
+                    <div class="bar-track"><div class="bar-fill" style="width:${(t.closed||0)/total*100}%;background:#556677;"></div></div>
+                    <span class="bar-value" style="color:#556677;">${t.closed||0}</span>
+                </div>
+                <div class="metric" style="margin-top:8px;"><span class="key">工单总数</span><span class="val">${t.total || 0}</span></div>
+            `;
+        }
+
+        // ==== Cache Panel ====
+        function renderCachePanel(data) {
+            const c = data.cache || {};
+            const total = (c.hits||0) + (c.misses||0);
+            const hitRate = total > 0 ? (c.hits/total*100) : 0;
+            const missRate = total > 0 ? (c.misses/total*100) : 0;
+            $('panelCache').innerHTML = `
+                <div class="mini-bar">
+                    <span class="bar-label">命中</span>
+                    <div class="bar-track"><div class="bar-fill green" style="width:${hitRate}%"></div></div>
+                    <span class="bar-value" style="color:#66bb6a;">${c.hits||0}</span>
+                </div>
+                <div class="mini-bar">
+                    <span class="bar-label">未命中</span>
+                    <div class="bar-track"><div class="bar-fill orange" style="width:${missRate}%"></div></div>
+                    <span class="bar-value" style="color:#ffa726;">${c.misses||0}</span>
+                </div>
+                <div class="metric"><span class="key">命中率</span>
+                    <span class="val ${hitRate > 50 ? 'green' : 'orange'}">${hitRate.toFixed(1)}%</span>
+                </div>
+                <div class="metric"><span class="key">缓存大小</span><span class="val">${c.size || 0} 项</span></div>
+            `;
+        }
+
+        // ==== Rate Limit Panel ====
+        function renderRateLimitPanel(data) {
+            const r = data.rateLimit || {};
+            const total = (r.allowed||0) + (r.rateLimited||0);
+            const limitedPct = total > 0 ? (r.rateLimited||0)/total*100 : 0;
+            $('panelRateLimit').innerHTML = `
+                <div class="mini-bar">
+                    <span class="bar-label">已放行</span>
+                    <div class="bar-track"><div class="bar-fill blue" style="width:${100-limitedPct}%"></div></div>
+                    <span class="bar-value" style="color:#4fc3f7;">${r.allowed||0}</span>
+                </div>
+                <div class="mini-bar">
+                    <span class="bar-label">已限流</span>
+                    <div class="bar-track"><div class="bar-fill red" style="width:${limitedPct}%"></div></div>
+                    <span class="bar-value" style="color:#ef5350;">${r.rateLimited||0}</span>
+                </div>
+                <div class="metric"><span class="key">请求总数</span><span class="val">${r.totalRequests||0}</span></div>
+                <div class="metric"><span class="key">限流率</span>
+                    <span class="val ${limitedPct > 10 ? 'red' : 'green'}">${limitedPct.toFixed(1)}%</span>
+                </div>
+            `;
+        }
+
+        // ==== Chat Metrics (detailed tab) ====
+        function renderChatMetrics(data) {
+            const c = data.chat || {};
+            $('chatMetrics').innerHTML = `
+                <div class="metric"><span class="key">总消息数</span><span class="val">${fmtNum(c.totalMessages||0)}</span></div>
+                <div class="metric"><span class="key">创建会话数</span><span class="val">${fmtNum(c.totalSessions||0)}</span></div>
+                <div class="metric"><span class="key">当前活跃会话</span><span class="val blue">${c.activeSessions||0}</span></div>
+                <div class="metric"><span class="key">LLM 调用次数</span><span class="val">${fmtNum(c.totalLlmCalls||0)}</span></div>
+                <div class="metric"><span class="key">总 Token 消耗</span><span class="val">${fmtNum(c.totalTokens||0)}</span></div>
+                <div class="metric"><span class="key">LLM 总耗时</span><span class="val">${fmtMs(c.totalLlmTimeMs||0)}</span></div>
+            `;
+        }
+
+        // ==== Response Time ====
+        function renderResponseTime(data) {
+            const c = data.chat || {};
+            const p50 = c.p50ResponseTimeMs || '0';
+            const p95 = c.p95ResponseTimeMs || '0';
+            const avg = c.avgResponseTimeMs || '0';
+            $('responseTime').innerHTML = `
+                <div class="metric"><span class="key">P50</span><span class="val green">${p50}ms</span></div>
+                <div class="metric"><span class="key">P95</span><span class="val orange">${p95}ms</span></div>
+                <div class="metric"><span class="key">平均值</span><span class="val blue">${avg}ms</span></div>
+                <div style="margin-top:12px;padding:12px;background:#0f1419;border-radius:8px;">
+                    <div style="font-size:11px;color:#556677;text-align:center;">
+                        ⚡ 性能指标：好的 P95 &lt; 2000ms<br>
+                        当前 P95: ${p95}ms
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==== Knowledge Stats ====
+        function renderKnowledgeStats(data) {
+            const k = data.knowledge || {};
+            $('knowledgeStats').innerHTML = `
+                <div class="metric"><span class="key">文档总数</span><span class="val blue">${k.totalDocs||0}</span></div>
+                <div class="metric"><span class="key">分类数量</span><span class="val">${k.categories||0}</span></div>
+            `;
+        }
+
+        // ==== Cost Summary ====
+        function renderCostSummary(data) {
+            const c = data.cost || {};
+            $('costSummary').innerHTML = `
+                <div class="metric"><span class="key">累计成本 (USD)</span><span class="val pink">$${c.totalCostUsd||'0.0000'}</span></div>
+                <div class="metric"><span class="key">累计成本 (人民币)</span><span class="val">¥${((parseFloat(c.totalCostUsd||'0')) * 7.2).toFixed(4)}</span></div>
+                <div class="metric"><span class="key">成本单位</span><span class="val">${c.totalCostCents||'0.00¢'}</span></div>
+            `;
+        }
+
+        // ==== Cost Chart ====
+        function renderCostChart(data) {
+            const cost = data.cost || {};
+            const hourly = cost.hourlyTrend || [];
+            const el = $('costChart');
+            if (!hourly.length) {
+                el.innerHTML = `<div style="text-align:center;padding:20px;color:#556677;">暂无成本数据</div>`;
+                return;
+            }
+            const maxCost = Math.max(...hourly.map(h => parseFloat(h.cost)), 0.001);
+            let bars = hourly.map(h => {
+                const pct = (parseFloat(h.cost) / maxCost * 80);
+                return `<div class="cost-bar" style="height:${pct}px;" title="${h.timeLabel}: $${h.cost}"></div>`;
+            }).join('');
+            el.innerHTML = `<div class="cost-chart">${bars}</div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:#556677;">
+                    <span>${hourly[0]?.timeLabel || ''}</span>
+                    <span>$${maxCost.toFixed(4)}</span>
+                    <span>${hourly[hourly.length-1]?.timeLabel || ''}</span>
+                </div>`;
+        }
+
+        // ==== Cost By Model ====
+        function renderCostByModel(data) {
+            const byModel = data.cost?.byModel || {};
+            const entries = Object.entries(byModel);
+            if (!entries.length) {
+                $('costByModel').innerHTML = `<div style="text-align:center;padding:20px;color:#556677;">暂无模型数据</div>`;
+                return;
+            }
+            $('costByModel').innerHTML = entries.map(([model, cost]) =>
+                `<div class="metric"><span class="key">${model}</span><span class="val">${cost}</span></div>`
+            ).join('');
+        }
+
+        // ==== System Info ====
+        function renderSystemInfo(data) {
+            const sys = data.system || {};
+            $('systemInfo').innerHTML = `
+                <div class="metric"><span class="key">服务</span><span class="val blue">${sys.service||'CS Platform'}</span></div>
+                <div class="metric"><span class="key">状态</span><span class="val green">${sys.status||'running'}</span></div>
+                <div class="metric"><span class="key">运行时长</span><span class="val">${sys.uptimeDisplay||'--'}</span></div>
+                <div class="metric"><span class="key">线程数</span><span class="val">${sys.threads||0}</span></div>
+                <div class="metric"><span class="key">启动时间</span><span class="val">${sys.startedAt ? new Date(sys.startedAt).toLocaleString('zh-CN') : '--'}</span></div>
+            `;
+        }
+
+        // ==== Memory Info ====
+        function renderMemoryInfo(data) {
+            const mem = data.system?.memory || {};
+            const usedPct = parseFloat(mem.usedPercent || '0');
+            const barColor = usedPct > 80 ? 'red' : usedPct > 50 ? 'orange' : 'green';
+            $('memoryInfo').innerHTML = `
+                <div class="mini-bar">
+                    <span class="bar-label">已用</span>
+                    <div class="bar-track"><div class="bar-fill ${barColor}" style="width:${usedPct}%"></div></div>
+                    <span class="bar-value" style="color:${usedPct>80?'#ef5350':usedPct>50?'#ffa726':'#66bb6a'};">${usedPct.toFixed(1)}%</span>
+                </div>
+                <div class="metric"><span class="key">已用内存</span><span class="val">${mem.used||'0MB'}</span></div>
+                <div class="metric"><span class="key">总内存</span><span class="val">${mem.total||'0MB'}</span></div>
+                <div class="metric"><span class="key">最大内存</span><span class="val">${mem.max||'0MB'}</span></div>
+            `;
+        }
+
+        // ==== Status Bar ====
+        function renderStatusBar(data) {
+            const chat = data.chat || {};
+            const tickets = data.tickets || {};
+            const cache = data.cache || {};
+            const sys = data.system || {};
+
+            $('statActiveSessions').textContent = `💬 ${chat.activeSessions||0} 活跃会话`;
+            $('statActiveTickets').textContent = `🎫 ${(tickets.pending||0)+(tickets.inProgress||0)} 待处理工单`;
+            $('statCacheHit').textContent = `⚡ 缓存命中率: ${cache.hitRate||'0%'}`;
+            $('statUptime').textContent = `⏱ ${sys.uptimeDisplay||'--'}`;
+        }
+
+        // ==== Clear Cache ====
+        async function clearCache() {
+            try {
+                const resp = await fetch('/api/dashboard/cache/clear', { method: 'POST' });
+                const data = await resp.json();
+                alert(`✅ 缓存已清除 (之前 ${data.before} 项)`);
+                refreshAll();
+            } catch (e) {
+                alert('❌ 清除失败: ' + e.message);
+            }
+        }
+
+        // ==== Helpers ====
+        function fmtNum(n) {
+            if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+            return String(n);
+        }
+
+        function fmtMs(ms) {
+            if (ms < 1000) return ms + 'ms';
+            if (ms < 60000) return (ms/1000).toFixed(1) + 's';
+            if (ms < 3600000) return (ms/60000).toFixed(1) + 'm';
+            return (ms/3600000).toFixed(1) + 'h';
+        }
+
+        // ==== Init ====
+        refreshAll();
+    </script>
+</body>
+</html>
