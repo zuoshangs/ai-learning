@@ -1,0 +1,275 @@
+{
+  "summary": {
+    "total_samples": 20,
+    "mode": "Simulated",
+    "avg_faithfulness": 0.925,
+    "avg_answer_relevancy": 0.0805,
+    "avg_context_precision": 0.9,
+    "avg_context_recall": 0.9008,
+    "avg_llm_judge_score": 4.6,
+    "by_category": {
+      "售后": {
+        "count": 4,
+        "avg_faithfulness": 1.0,
+        "avg_relevancy": 0.1202
+      },
+      "物流": {
+        "count": 4,
+        "avg_faithfulness": 1.0,
+        "avg_relevancy": 0.0953
+      },
+      "会员": {
+        "count": 3,
+        "avg_faithfulness": 1.0,
+        "avg_relevancy": 0.0758
+      },
+      "服务": {
+        "count": 2,
+        "avg_faithfulness": 1.0,
+        "avg_relevancy": 0.0109
+      },
+      "账号": {
+        "count": 2,
+        "avg_faithfulness": 0.75,
+        "avg_relevancy": 0.0376
+      },
+      "促销": {
+        "count": 3,
+        "avg_faithfulness": 0.8333,
+        "avg_relevancy": 0.0839
+      },
+      "综合": {
+        "count": 2,
+        "avg_faithfulness": 0.75,
+        "avg_relevancy": 0.0861
+      }
+    }
+  },
+  "results": [
+    {
+      "question": "我想退货，多久之内可以退？",
+      "answer": "本平台支持30天内无理由退货，商品需保持原状、配件齐全、包装完整。特殊商品如食品、内衣除外。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0497,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/2 语句受支持",
+      "llm_judge": {
+        "score": 5,
+        "faithfulness_score": 5,
+        "completeness_score": 5,
+        "relevance_score": 5,
+        "conciseness_score": 5,
+        "reason": "回答完全忠实于上下文，完整覆盖退货时限、条件及例外，直接回应问题，简洁无冗余。",
+        "improvement": "无需改进。"
+      }
+    },
+    {
+      "question": "退货后什么时候收到退款？",
+      "answer": "退款将在我们收到退货后的5-7个工作日内原路返回。使用信用卡支付的退款需要7-10个工作日。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.1178,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/2 语句受支持",
+      "llm_judge": {
+        "score": 4,
+        "faithfulness_score": 5,
+        "completeness_score": 3,
+        "relevance_score": 5,
+        "conciseness_score": 5,
+        "reason": "回答忠实于上下文且简洁相关，但遗漏了退款包含商品原价和税费的信息，完整性不足。",
+        "improvement": "补充说明退款金额包含商品原价和税费。"
+      }
+    },
+    {
+      "question": "食品可以退货吗？",
+      "answer": "特殊商品如食品、内衣等不支持退货。普通商品30天内可以无理由退货。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.1303,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/2 语句受支持",
+      "llm_judge": {
+        "score": 5,
+        "faithfulness_score": 5,
+        "completeness_score": 5,
+        "relevance_score": 5,
+        "conciseness_score": 5,
+        "reason": "回答完全忠实于上下文，完整覆盖问题所需信息，直接回应且简洁无冗余。",
+        "improvement": "无需改进。"
+      }
+    },
+    {
+      "question": "退款金额包括哪些？",
+      "answer": "退款金额包含商品原价和税费，原路返回。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.1828,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持",
+      "llm_judge": {
+        "score": 5,
+        "faithfulness_score": 5,
+        "completeness_score": 5,
+        "relevance_score": 5,
+        "conciseness_score": 5,
+        "reason": "回答完全忠实于上下文，准确覆盖退款金额构成，直接回应问题，且简洁无冗余。",
+        "improvement": "无需改进。"
+      }
+    },
+    {
+      "question": "普通配送要多久到？",
+      "answer": "标准配送3-5个工作日，满99元包邮。加急配送1-2个工作日，需加收15元。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0415,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/2 语句受支持",
+      "llm_judge": {
+        "score": 4,
+        "faithfulness_score": 5,
+        "completeness_score": 3,
+        "relevance_score": 5,
+        "conciseness_score": 5,
+        "reason": "回答忠实于上下文，直接回应问题，简洁无冗余。但未提及当日达信息，完整性略不足。",
+        "improvement": "可补充当日达条件，以覆盖所有配送选项。"
+      }
+    },
+    {
+      "question": "加急配送多少钱？",
+      "answer": "加急配送1-2个工作日，需加收15元。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.1476,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "满多少包邮？",
+      "answer": "满99元包邮。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.1078,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "当日达什么时候下单才行？",
+      "answer": "当日达仅限部分城市，需在11:00前下单。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0844,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "会员分几个等级？",
+      "answer": "会员分为普通、银卡、金卡、钻石卡四级。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0832,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "金卡会员要消费多少？",
+      "answer": "金卡需年消费3000元，享受9折优惠。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0629,
+      "context_precision": 1.0,
+      "context_recall": 0.75,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "钻石卡打几折？",
+      "answer": "钻石卡需年消费10000元，享受8.5折优惠。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0813,
+      "context_precision": 1.0,
+      "context_recall": 0.75,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "怎么联系人工客服？",
+      "answer": "您可以拨打客服热线400-123-4567，工作日9:00-21:00。或发送邮件至support@example.com。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0217,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/2 语句受支持"
+    },
+    {
+      "question": "客服热线几点到几点？",
+      "answer": "工作日9:00-21:00。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "怎么设置安全的密码？",
+      "answer": "建议设置强密码，包含大小写字母+数字+特殊字符，并开启双重验证。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.048,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "账号被盗了怎么办？",
+      "answer": "立即修改密码并联系客服。建议开启双重验证以增强账号安全性。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.0271,
+      "context_precision": 0.0,
+      "context_recall": 0.6667,
+      "faithful_detail": "0/2 语句受支持"
+    },
+    {
+      "question": "优惠券怎么用？",
+      "answer": "优惠券在结算页面使用，每笔订单限用一张，有效期为领取后7天。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0884,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "优惠券有效期多久？",
+      "answer": "领取后7天。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "我买的东西想退掉，退款回哪里？",
+      "answer": "30天内可以退，收到退货后5-7个工作日内原路返回。",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.0419,
+      "context_precision": 0.5,
+      "context_recall": 1.0,
+      "faithful_detail": "0/1 语句受支持"
+    },
+    {
+      "question": "我是金卡会员，退货有什么特殊政策吗？",
+      "answer": "金卡会员享受9折优惠。退货政策方面与普通会员一致，支持30天内无理由退货。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.1303,
+      "context_precision": 1.0,
+      "context_recall": 0.25,
+      "faithful_detail": "0/2 语句受支持"
+    },
+    {
+      "question": "优惠券和会员折扣能一起用吗？",
+      "answer": "优惠券每笔订单限用一张，部分商品不参与优惠活动。会员折扣与优惠券能否叠加使用需查看具体活动规则。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.1634,
+      "context_precision": 0.5,
+      "context_recall": 0.6,
+      "faithful_detail": "0/2 语句受支持"
+    }
+  ]
+}
