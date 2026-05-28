@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: production-gateway
+  ai:
+    openai:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat
+
+deepseek:
+  api:
+    url: https://api.deepseek.com/chat/completions
+    key: ${DEEPSEEK_API_KEY}
+
+gateway:
+  cache:
+    max-size: 1024
+    ttl-minutes: 30
+    similarity-threshold: 0.85
+  rate-limit:
+    default-rpm: 30
+  circuit:
+    failure-threshold: 5
+    reset-seconds: 30
+  llm:
+    model: deepseek-chat
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: production-gateway
+
+logging:
+  pattern:
+    level: "%5p [%X{traceId}]"
+  level:
+    com.ai.llm: INFO

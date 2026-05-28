@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+  namespace: llm-gateway
+data:
+  application-prod.yml: |
+    server:
+      port: 8080
+      tomcat:
+        threads:
+          max: 50
+      shutdown: graceful
+    spring:
+      lifecycle:
+        timeout-per-shutdown-phase: 30s
+    gateway:
+      cache:
+        max-size: 4096
+        ttl-minutes: 60
+        similarity-threshold: 0.92
+      rate-limit:
+        default-rpm: 60
+      circuit:
+        failure-threshold: 10
+        reset-seconds: 60
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics,prometheus
+      endpoint:
+        health:
+          probes:
+            enabled: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gateway-secrets
+  namespace: llm-gateway
+type: Opaque
+stringData:
+  DEEPSEEK_API_KEY: "sk-your-deepseek-key-here"

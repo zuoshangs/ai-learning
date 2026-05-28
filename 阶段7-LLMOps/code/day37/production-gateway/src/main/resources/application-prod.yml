@@ -1,0 +1,44 @@
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 50
+    connection:
+      timeout: 30s
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+gateway:
+  cache:
+    max-size: 4096
+    ttl-minutes: 60
+    similarity-threshold: 0.92
+  rate-limit:
+    default-rpm: 60
+  circuit:
+    failure-threshold: 10
+    reset-seconds: 60
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  file:
+    name: /var/log/gateway/app.log
+  level:
+    com.ai.llm: WARN
