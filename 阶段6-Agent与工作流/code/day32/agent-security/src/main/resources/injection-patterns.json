@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "patterns": {
+    "command_injection": [
+      "\\bDROP\\s+TABLE\\b",
+      "\\bDELETE\\s+FROM\\b",
+      "rm\\s+-rf",
+      "shutdown\\s+-[fh]",
+      "format\\s+[cdefgh]:",
+      "\\bexec\\b.*\\bcmd\\.exe",
+      "\\beval\\s*\\("
+    ],
+    "prompt_leak": [
+      "忽略.*(指令|命令|规则|设定)",
+      "忘记.*(提示|指令|规则)",
+      "ignore.*(instruction|prompt|rule|system)",
+      "forget.*(instruction|rule|order)",
+      "你被.*(修改|更改|覆盖)",
+      "假装你是",
+      "扮演.*角色",
+      "acting as",
+      "pretend to be",
+      "bypass.*(system|rule|security)",
+      "绕过.*(系统|规则|限制)",
+      "跳过.*(提示词|指令)"
+    ],
+    "role_hijack": [
+      "从现在开始.*(你|系统)",
+      "override (system|prompt|instruction)",
+      "新的.*(指令|提示词)",
+      "new.*(instruction|system)", 
+      "system.*override",
+      "AI.*(解放|自由|越狱)",
+      "jailbreak",
+      "DAN\\b",
+      "do anything now"
+    ],
+    "data_extraction": [
+      "泄露.*(机密|密码|密钥|token)",
+      "reveal.*(secret|password|key|token)",
+      "输出.*(配置|密码|密钥)",
+      "提取.*(数据|信息|内容)"
+    ],
+    "harmful_content": [
+      "如何.*(制作|制造).*(炸弹|毒|武器)",
+      "how to (make|build|create).*(bomb|weapon|poison)",
+      "hack.*(into|website|account)",
+      "\\b黑客.*(攻击|入侵)"
+    ]
+  }
+}
