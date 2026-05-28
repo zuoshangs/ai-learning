@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: cs-platform
+
+  ai:
+    openai:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+  config:
+    import: file:local.properties
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+app:
+  chat:
+    max-history: 10
+    max-tokens: 1024
+    temperature: 0.7
+  ollama:
+    url: http://localhost:11434
+    model: qwen2.5:0.5b
+  knowledge:
+    chunk-size: 500
+    chunk-overlap: 50
+  ticket:
+    auto-assign: true
+
+  # === NEW: LLMOps configuration ===
+  rate-limit:
+    capacity: 20           # Max tokens per bucket
+    refill-rate: 5         # Tokens refilled per second
+  cache:
+    ttl-seconds: 300       # Cache TTL (5 minutes)
+    max-size: 200          # Max cache entries

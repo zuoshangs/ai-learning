@@ -1,0 +1,56 @@
+# ============================================================
+# docker-compose.yml — CS Platform Deployment
+# ============================================================
+# Usage:
+#   DEEPSEEK_API_KEY=sk-xxx docker compose up -d
+#   docker compose logs -f
+# ============================================================
+
+services:
+  cs-platform:
+    build: .
+    container_name: cs-platform
+    ports:
+      - "8080:8080"
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:?DEEPSEEK_API_KEY is required}
+      - SPRING_AI_OPENAI_BASE_URL=https://api.deepseek.com
+      - SPRING_AI_OPENAI_CHAT_OPTIONS_MODEL=deepseek-chat
+      - APP_OLLAMA_URL=http://ollama:11434
+      - JAVA_OPTS=-Xmx512m -Xms256m
+      - TZ=Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/dashboard/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - cs-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Ollama for local embeddings
+  ollama:
+    image: ollama/ollama:latest
+    container_name: cs-ollama
+    profiles:
+      - ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - cs-network
+    restart: unless-stopped
+
+networks:
+  cs-network:
+    driver: bridge
+
+volumes:
+  ollama-data:

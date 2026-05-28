@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工单管理 - AI 智能客服</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;min-height:100vh;}
+.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+.header h1{font-size:20px;}
+.header a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:14px;}
+.header a:hover{color:white;}
+.container{max-width:1100px;margin:0 auto;padding:20px;}
+.stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.stat-card{background:white;border-radius:12px;padding:16px 20px;flex:1;min-width:100px;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.stat-card .num{font-size:26px;font-weight:700;}
+.stat-card .label{font-size:12px;color:#999;margin-top:2px;}
+.s-pending .num{color:#f39c12;}
+.s-progress .num{color:#3498db;}
+.s-resolved .num{color:#27ae60;}
+.s-closed .num{color:#95a5a6;}
+.filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.filters select,.filters input{padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;}
+.filters button{background:#667eea;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;}
+.tab-bar{display:flex;gap:0;margin-bottom:16px;background:white;border-radius:8px;overflow:hidden;}
+.tab-bar button{flex:1;padding:10px;background:white;border:none;cursor:pointer;font-size:14px;transition:background 0.2s;}
+.tab-bar button.active{background:#667eea;color:white;}
+.tab-bar button:hover:not(.active){background:#f0f2f5;}
+.hidden{display:none;}
+.ticket-list{display:grid;gap:12px;}
+.ticket-card{background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.1);border-left:4px solid #ddd;}
+.ticket-card.p-high{border-left-color:#e74c3c;}
+.ticket-card.p-urgent{border-left-color:#c0392b;border-left-width:6px;}
+.ticket-card.p-medium{border-left-color:#f39c12;}
+.ticket-card.p-low{border-left-color:#27ae60;}
+.ticket-card h4{font-size:15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.ticket-card .meta{font-size:12px;color:#999;margin-bottom:6px;display:flex;gap:12px;}
+.ticket-card .desc{font-size:13px;color:#666;line-height:1.5;margin-bottom:8px;}
+.actions{display:flex;gap:6px;flex-wrap:wrap;}
+.actions button{border:none;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;background:#f0f2f5;}
+.actions button:hover{opacity:0.8;}
+.actions .btn-primary{background:#667eea;color:white;}
+.actions .btn-danger{background:#e74c3c;color:white;}
+.actions .btn-success{background:#27ae60;color:white;}
+.actions .btn-warning{background:#f39c12;color:white;}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;}
+.bg-pending{background:#fef3cd;color:#856404;}
+.bg-progress{background:#cce5ff;color:#004085;}
+.bg-resolved{background:#d4edda;color:#155724;}
+.bg-closed{background:#e2e3e5;color:#383d41;}
+.bg-urgent{background:#f8d7da;color:#721c24;}
+.bg-high{background:#f8d7da;color:#721c24;}
+.form-card{background:white;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.form-card h3{margin-bottom:12px;}
+.form-card input,.form-card select,.form-card textarea{width:100%;padding:8px 12px;margin-bottom:8px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:inherit;}
+.form-card textarea{min-height:80px;resize:vertical;}
+.form-card button{background:#667eea;color:white;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;}
+.empty{text-align:center;padding:40px;color:#999;}
+.detail-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:100;}
+.detail-modal > div{background:white;border-radius:12px;padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;}
+.detail-modal h3{margin-bottom:12px;}
+.detail-modal .row{display:flex;gap:8px;margin-bottom:8px;}
+.detail-modal .row label{font-weight:600;min-width:80px;color:#666;font-size:13px;}
+.detail-modal .actions{margin-top:16px;}
+.toast{position:fixed;top:20px;right:20px;background:#27ae60;color:white;padding:12px 20px;border-radius:8px;z-index:200;animation:slideIn 0.3s;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>🎫 工单管理</h1>
+    <div><a href="/">← 客服对话</a> &nbsp; <a href="/kb">📚 知识库</a></div>
+</div>
+
+<div class="container">
+    <div class="stats" id="statsContainer"></div>
+
+    <div class="tab-bar">
+        <button class="active" onclick="switchTab('list')">📋 工单列表</button>
+        <button onclick="switchTab('create')">➕ 创建工单</button>
+    </div>
+
+    <!-- List Tab -->
+    <div id="tab-list">
+        <div class="filters">
+            <select id="filterStatus" onchange="loadTickets()">
+                <option value="">全部状态</option>
+                <option value="PENDING">待处理</option>
+                <option value="IN_PROGRESS">处理中</option>
+                <option value="RESOLVED">已解决</option>
+                <option value="CLOSED">已关闭</option>
+            </select>
+            <select id="filterPriority" onchange="loadTickets()">
+                <option value="">全部优先级</option>
+                <option value="LOW">低</option>
+                <option value="MEDIUM">中</option>
+                <option value="HIGH">高</option>
+                <option value="URGENT">紧急</option>
+            </select>
+            <select id="filterCategory" onchange="loadTickets()">
+                <option value="">全部分类</option>
+            </select>
+            <span id="ticketCount" style="font-size:13px;color:#999;"></span>
+        </div>
+        <div class="ticket-list" id="ticketList"></div>
+    </div>
+
+    <!-- Create Tab -->
+    <div id="tab-create" class="hidden">
+        <div class="form-card">
+            <h3>新建工单</h3>
+            <input type="text" id="ticketTitle" placeholder="工单标题">
+            <input type="text" id="ticketContact" placeholder="联系方式（电话/邮箱）">
+            <input type="text" id="ticketCreator" placeholder="创建人">
+            <div style="display:flex;gap:8px;">
+                <select id="ticketCategory" style="flex:1;">
+                    <option value="售后">售后</option>
+                    <option value="物流">物流</option>
+                    <option value="会员">会员</option>
+                    <option value="账号">账号</option>
+                    <option value="其他">其他</option>
+                </select>
+                <select id="ticketPriority" style="flex:1;">
+                    <option value="LOW">低优先级</option>
+                    <option value="MEDIUM" selected>中优先级</option>
+                    <option value="HIGH">高优先级</option>
+                    <option value="URGENT">紧急</option>
+                </select>
+            </div>
+            <textarea id="ticketDesc" placeholder="问题描述..."></textarea>
+            <button onclick="createTicket()">创建工单</button>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div id="detailModal" class="detail-modal hidden" onclick="if(event.target===this)closeDetail()">
+    <div id="detailContent"></div>
+</div>
+
+<script>
+function $(id){return document.getElementById(id);}
+function showToast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
+
+function switchTab(t){document.querySelectorAll('.tab-bar button').forEach(b=>b.classList.toggle('active',b.textContent.includes({list:'列',create:'创'}[t])));$('tab-list').classList.toggle('hidden',t!=='list');$('tab-create').classList.toggle('hidden',t!=='create');if(t==='list')loadTickets();}
+
+function loadTickets(){
+    const s=$('filterStatus').value,p=$('filterPriority').value,c=$('filterCategory').value;
+    let url='/api/tickets?';
+    if(s)url+='status='+s+'&';if(p)url+='priority='+p+'&';if(c)url+='category='+encodeURIComponent(c);
+    fetch(url).then(r=>r.json()).then(d=>{
+        $('ticketCount').textContent=d.total+' 条工单';
+        $('ticketList').innerHTML=d.tickets.map(t=>{
+            const sClass={PENDING:'bg-pending',IN_PROGRESS:'bg-progress',RESOLVED:'bg-resolved',CLOSED:'bg-closed'}[t.status]||'';
+            const pClass={URGENT:'p-urgent',HIGH:'p-high',MEDIUM:'p-medium',LOW:'p-low'}[t.priority]||'';
+            const sName={PENDING:'待处理',IN_PROGRESS:'处理中',RESOLVED:'已解决',CLOSED:'已关闭'}[t.status];
+            const pName={URGENT:'紧急',HIGH:'高',MEDIUM:'中',LOW:'低'}[t.priority];
+            return `<div class="ticket-card ${pClass}" onclick="showDetail('${t.id}')">
+                <h4><span>${esc(t.title)}</span> <span class="badge ${sClass}">${sName}</span></h4>
+                <div class="meta">
+                    <span># ${t.id.substring(0,8)}</span>
+                    <span>${pName}优先级</span>
+                    <span>${esc(t.category)}</span>
+                    <span>${esc(t.creatorName||'匿名')}</span>
+                    <span>${t.assignee ? esc(t.assignee) : '未分配'}</span>
+                    <span>${fmtTime(t.createdAt)}</span>
+                </div>
+                <div class="desc">${esc(t.preview)}</div>
+            </div>`;
+        }).join('');
+        if(!d.tickets.length)$('ticketList').innerHTML='<div class="empty">暂无匹配工单</div>';
+    });
+}
+
+function loadStats(){
+    fetch('/api/tickets/stats').then(r=>r.json()).then(d=>{
+        $('statsContainer').innerHTML=`
+            <div class="stat-card"><div class="num">${d.total}</div><div class="label">总计</div></div>
+            <div class="stat-card s-pending"><div class="num">${d.pending}</div><div class="label">待处理</div></div>
+            <div class="stat-card s-progress"><div class="num">${d.inProgress}</div><div class="label">处理中</div></div>
+            <div class="stat-card s-resolved"><div class="num">${d.resolved}</div><div class="label">已解决</div></div>
+            <div class="stat-card s-closed"><div class="num">${d.closed}</div><div class="label">已关闭</div></div>
+            <div class="stat-card"><div class="num">${d.avgResolutionHours.toFixed(1)}h</div><div class="label">平均解决</div></div>`;
+    });
+}
+
+function loadCategories(){
+    fetch('/api/tickets/categories').then(r=>r.json()).then(d=>{
+        const opts=d.categories.map(c=>`<option value="${c}">${c}</option>`).join('');
+        $('filterCategory').innerHTML='<option value="">全部分类</option>'+opts;
+    });
+}
+
+function createTicket(){
+    const t=$('ticketTitle').value.trim(),d=$('ticketDesc').value.trim();
+    if(!t||!d){alert('请填写标题和描述');return;}
+    fetch('/api/tickets',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            title:t,description:d,category:$('ticketCategory').value,
+            priority:$('ticketPriority').value,
+            creatorName:$('ticketCreator').value.trim()||'用户',
+            creatorContact:$('ticketContact').value.trim()
+        })
+    }).then(r=>r.json()).then(()=>{
+        showToast('✅ 工单已创建');
+        $('ticketTitle').value='';$('ticketDesc').value='';$('ticketContact').value='';
+        loadTickets();loadStats();
+    });
+}
+
+function showDetail(id){
+    fetch('/api/tickets/'+id).then(r=>r.json()).then(t=>{
+        const sName={PENDING:'待处理',IN_PROGRESS:'处理中',RESOLVED:'已解决',CLOSED:'已关闭'}[t.status];
+        const pName={URGENT:'紧急',HIGH:'高',MEDIUM:'中',LOW:'低'}[t.priority];
+        const pClass={URGENT:'bg-urgent',HIGH:'bg-high',MEDIUM:'',LOW:''}[t.priority]||'';
+        $('detailContent').innerHTML=`
+            <h3>${esc(t.title)} <span class="badge ${pClass}">${pName}</span></h3>
+            <div class="row"><label>状态</label><span class="badge ${sName==='待处理'?'bg-pending':sName==='处理中'?'bg-progress':sName==='已解决'?'bg-resolved':'bg-closed'}">${sName}</span></div>
+            <div class="row"><label>分类</label><span>${esc(t.category)}</span></div>
+            <div class="row"><label>创建人</label><span>${esc(t.creatorName)}</span></div>
+            <div class="row"><label>联系方式</label><span>${esc(t.creatorContact||'-')}</span></div>
+            <div class="row"><label>负责人</label><span>${t.assignee ? esc(t.assignee) : '未分配'}</span></div>
+            <div class="row"><label>创建时间</label><span>${fmtTime(t.createdAt)}</span></div>
+            <div class="row"><label>解决耗时</label><span>${t.resolutionTime||'-'}</span></div>
+            <hr style="margin:12px 0;">
+            <div style="font-size:14px;line-height:1.6;margin-bottom:12px;">${esc(t.description)}</div>
+            ${t.resolution ? `<div style="background:#f0f9f0;padding:12px;border-radius:8px;margin-bottom:12px;"><strong>解决方案：</strong><br>${esc(t.resolution)}</div>` : ''}
+            <div class="actions">
+                ${t.status==='PENDING' ? `<button class="btn-primary" onclick="updateStatus('${t.id}','IN_PROGRESS')">📋 开始处理</button>` : ''}
+                ${t.status==='PENDING' ? `<button class="btn-danger" onclick="updateStatus('${t.id}','CLOSED')">🚫 关闭</button>` : ''}
+                ${t.status==='IN_PROGRESS' ? `<button class="btn-success" onclick="resolveTicket('${t.id}')">✅ 标记解决</button>` : ''}
+                ${t.status==='RESOLVED' ? `<button class="btn-warning" onclick="updateStatus('${t.id}','CLOSED')">🔒 关闭工单</button>` : ''}
+                ${t.status==='RESOLVED' ? `<button onclick="updateStatus('${t.id}','IN_PROGRESS')">↩ 重新打开</button>` : ''}
+                ${t.status!=='CLOSED' && t.status!=='IN_PROGRESS' ? `<button class="btn-primary" onclick="assignTicket('${t.id}')">👤 分配</button>` : ''}
+                <button class="btn-danger" onclick="deleteTicket('${t.id}')">🗑 删除</button>
+            </div>
+        `;
+        $('detailModal').classList.remove('hidden');
+    });
+}
+
+function closeDetail(){$('detailModal').classList.add('hidden');}
+
+function updateStatus(id,status){
+    const label={IN_PROGRESS:'处理中',RESOLVED:'已解决',CLOSED:'已关闭'}[status]||status;
+    if(!confirm(`确定将工单状态改为「${label}」？`))return;
+    fetch('/api/tickets/'+id+'/status',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({status})
+    }).then(r=>{if(r.ok){showToast('✅ 状态已更新');closeDetail();loadTickets();loadStats();}else{r.json().then(d=>alert(d.error))}});
+}
+
+function resolveTicket(id){
+    const res=prompt('请输入解决方案：');
+    if(res===null)return;
+    fetch('/api/tickets/'+id+'/status',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({status:'RESOLVED',resolution:res||'已处理'})
+    }).then(r=>{if(r.ok){showToast('✅ 已标记为解决');closeDetail();loadTickets();loadStats();}});
+}
+
+function assignTicket(id){
+    const name=prompt('分配给谁？');
+    if(!name)return;
+    fetch('/api/tickets/'+id+'/assign',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({assignee:name})
+    }).then(r=>{if(r.ok){showToast('✅ 已分配');closeDetail();loadTickets();}});
+}
+
+function deleteTicket(id){
+    if(!confirm('确定删除此工单？'))return;
+    fetch('/api/tickets/'+id,{method:'DELETE'}).then(()=>{showToast('🗑 已删除');closeDetail();loadTickets();loadStats();});
+}
+
+function fmtTime(ts){const d=new Date(ts);return d.toLocaleDateString('zh-CN')+' '+d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});}
+function esc(s){const e=document.createElement('div');e.textContent=s;return e.innerHTML;}
+
+loadTickets();loadStats();loadCategories();
+</script>
+</body>
+</html>
