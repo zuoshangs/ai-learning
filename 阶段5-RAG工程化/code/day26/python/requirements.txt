@@ -1,0 +1,1 @@
+# Day 26 Python demo\n# No external dependencies beyond stdlib
