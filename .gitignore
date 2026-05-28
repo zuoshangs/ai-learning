@@ -31,6 +31,9 @@ md_to_feishu.py
 **/dependency-reduced-pom.xml
 **/*.class
 **/*.jar
+
+# 本地 API Key 配置
+**/local.properties
 !java/pom.xml
 
 # IDE
