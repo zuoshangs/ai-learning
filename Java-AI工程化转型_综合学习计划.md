@@ -391,7 +391,7 @@
 
 ```
 Day  1-7   第一阶段：AI基础与提示词工程   ✅ Python
-Day  8-15  第二、二阶段：AI进阶能力实战       ✅ Python
+Day  8-15  第二、三阶段：AI进阶能力实战       ✅ Python
 ───────── 以上已学完 ─────────
 Day 16-21  第四阶段：Java AI 基础落地     🆕 Java
 Day 22-26  第五阶段：RAG 工程化           🆕 Java
