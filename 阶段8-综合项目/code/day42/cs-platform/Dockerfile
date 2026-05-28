@@ -23,6 +23,8 @@ WORKDIR /app
 
 # Security: run as non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
 # Copy JAR from builder
 COPY --from=builder /build/target/cs-platform-1.0.0.jar app.jar
@@ -33,7 +35,7 @@ USER appuser
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wget -qO- http://localhost:8080/api/dashboard/health || exit 1
+    CMD curl -f http://localhost:8080/api/dashboard/health || exit 1
 
 ENTRYPOINT ["java", \
     "-Djava.security.egd=file:/dev/./urandom", \

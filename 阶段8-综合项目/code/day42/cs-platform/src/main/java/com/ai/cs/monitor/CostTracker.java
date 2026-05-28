@@ -68,7 +68,6 @@ public class CostTracker {
      * Track cost with known token counts (more accurate).
      */
     public void trackCallWithTokens(int inputTokens, int outputTokens, String model) {
-        metricsCollector.recordLlmCall(0, inputTokens + outputTokens, model);
         metricsCollector.recordCost(inputTokens, outputTokens, model != null ? model : defaultModel);
     }
 
