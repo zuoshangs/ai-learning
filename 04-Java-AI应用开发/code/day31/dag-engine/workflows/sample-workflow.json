@@ -1,0 +1,48 @@
+{
+  "name": "天气和计算工作流",
+  "description": "接收用户输入，同时查天气和做计算，最后用LLM总结",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "START",
+      "dependencies": [],
+      "config": {}
+    },
+    {
+      "id": "weather",
+      "type": "TOOL",
+      "dependencies": ["start"],
+      "config": {
+        "toolName": "weather",
+        "params": "{_input}"
+      }
+    },
+    {
+      "id": "calculator",
+      "type": "TOOL",
+      "dependencies": ["start"],
+      "config": {
+        "toolName": "calculator",
+        "params": "{_input}"
+      }
+    },
+    {
+      "id": "summary",
+      "type": "LLM",
+      "dependencies": ["weather", "calculator"],
+      "config": {
+        "prompt": "根据以下信息生成一段简洁的总结：\n天气信息: {weather}\n计算结果: {calculator}\n原始输入: {_input}",
+        "model": "deepseek-chat"
+      }
+    },
+    {
+      "id": "end",
+      "type": "END",
+      "dependencies": ["summary"],
+      "config": {
+        "output": "工作流执行完毕。最终结果: {_summary}"
+      }
+    }
+  ]
+}

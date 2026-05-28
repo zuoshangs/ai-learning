@@ -1,0 +1,67 @@
+{
+  "name": "问答工作流（含条件分支）",
+  "description": "分析问题是否需要搜索，然后走不同分支，最后汇总答案",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "START",
+      "dependencies": [],
+      "config": {}
+    },
+    {
+      "id": "analyze",
+      "type": "LLM",
+      "dependencies": ["start"],
+      "config": {
+        "prompt": "分析用户问题，判断是否需要搜索实时信息。\n如果问题涉及实时数据、天气、新闻、股价等，只回答'需要搜索'。\n其他问题只回答'直接回答'。\n输入: {_input}",
+        "model": "deepseek-chat"
+      }
+    },
+    {
+      "id": "needs_search",
+      "type": "CONDITION",
+      "dependencies": ["analyze"],
+      "config": {
+        "condition": "analyze contains 需要搜索",
+        "trueBranch": "search_tool",
+        "falseBranch": "direct_answer"
+      }
+    },
+    {
+      "id": "search_tool",
+      "type": "TOOL",
+      "dependencies": ["needs_search"],
+      "config": {
+        "toolName": "web_search",
+        "params": "{_input}"
+      }
+    },
+    {
+      "id": "direct_answer",
+      "type": "LLM",
+      "dependencies": ["needs_search"],
+      "config": {
+        "prompt": "请用中文简要回答用户问题: {_input}",
+        "model": "deepseek-chat"
+      }
+    },
+    {
+      "id": "final_answer",
+      "type": "LLM",
+      "dependencies": ["search_tool", "direct_answer"],
+      "config": {
+        "prompt": "综合以下信息给出最终答案：\n搜索工具结果: {search_tool}\n直接回答: {direct_answer}\n原始问题: {_input}\n请给出一个完整、清晰的回答。",
+        "model": "deepseek-chat"
+      }
+    },
+    {
+      "id": "end",
+      "type": "END",
+      "dependencies": ["final_answer"],
+      "config": {
+        "output": "问答完成。最终回答: {_summary}"
+      }
+    }
+  ]
+}

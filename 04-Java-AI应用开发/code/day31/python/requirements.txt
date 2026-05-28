@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""
+Day 31 — Python 对照版 requirements
+"""
+
+# dag_demo.py 使用 requests 库调用 wttr.in 天气 API
+requests>=2.28.0
