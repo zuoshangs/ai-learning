@@ -1,0 +1,3 @@
+# Python dependencies for Cost Analyzer
+requests>=2.31.0
+matplotlib>=3.7.0
