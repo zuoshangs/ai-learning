@@ -1,12 +1,13 @@
 # AI 学习课程 🎓
 
-> **Java 工程师 → AI 工程化转型** | 已学 31/45 天
+> **Java 工程师 → AI 工程化转型** | 45 天系统课程 ✅ + 15 天进阶计划 🚀
 
 完整的学习计划请见：[Java-AI工程化转型_综合学习计划.md](./Java-AI工程化转型_综合学习计划.md)
+进阶计划请见：[AI工程化进阶计划_15天.md](./AI工程化进阶计划_15天.md)
 
 ---
 
-## 📚 已完成课程
+## 📚 已完成课程（45 天）
 
 ### 第一阶段：AI 基础（Python）— Day 1–7 ✅
 
@@ -54,7 +55,7 @@
 | 25 | 高级 RAG 技术 | 查询重写 + HyDE + 父文档检索 |
 | 26 | 企业知识库 V2 | 20+ Java 文件的企业级实现 |
 
-### 第五阶段：Agent 与工作流 — Day 27–31 ✅
+### 第五阶段：Agent 与工作流 — Day 27–32 ✅
 
 | Day | 主题 | 技术栈 |
 |:---:|------|--------|
@@ -63,6 +64,50 @@
 | 29 | Dify 工作流平台 | Docker Compose 部署 + Java 集成 |
 | 30 | 多 Agent 协作系统 | 消息总线 + Orchestrator-Worker |
 | 31 | 自研 DAG 执行引擎 | 拓扑排序 + 分层并行 + 条件路由 |
+| 32 | 安全防护与 Agent 评估 | Prompt Injection 防护 + 评估基准 |
+
+### 第六阶段：LLMOps — Day 33–37 ✅
+
+| Day | 主题 | 技术栈 |
+|:---:|------|--------|
+| 33 | LLM 网关与限流 | 令牌桶 + 熔断 + 降级 |
+| 34 | 语义缓存 | Embedding 语义相似度缓存 |
+| 35 | 可观测性与指标监控 | Micrometer + Prometheus + Grafana |
+| 36 | 性能调优与成本分析 | 延迟优化 + Token 成本核算 |
+| 37 | 生产加固 | 重试/退避 + 配置中心 + 蓝绿发布 |
+
+### 第七阶段：综合项目（智能客服平台）— Day 38–42 ✅
+
+| Day | 主题 | 核心内容 |
+|:---:|------|---------|
+| 38 | 多轮对话核心 | 意图识别 + 状态管理 + 上下文 |
+| 39 | RAG 知识库 | 多源文档接入 + 向量检索 + 动态路由 |
+| 40 | 工单系统 | 语义分类 + 自动分配 + 状态流转 |
+| 41 | 管理仪表盘 + LLMOps | 实时监控 + 成本追踪 + 质量评估 |
+| 42 | 项目总结 | 架构回顾 + 演进路径 + 面试准备 |
+
+### 第八阶段：职业冲刺 — Day 43–45 ✅
+
+| Day | 主题 | 内容 |
+|:---:|------|------|
+| 43 | 面试题 + 选型报告 | AI 工程化面试 30 题、Spring AI vs LangChain4j 选型 |
+| 44 | 简历包装 | 中英文 AI 工程师简历、项目经验提炼 |
+| 45 | 前沿拓展 + 结业 | MCP 协议详解、Ollama 本地部署、实战总结 |
+
+---
+
+## 🚀 进阶计划（15 天）
+
+完成 45 天课程后，基于技能短板分析的进阶强化：
+
+| 阶段 | 天数 | 内容 |
+|:----:|:----:|------|
+| 🥇 评估体系 | Day 1-3 | LLM-as-Judge、BERTScore、评估数据集构建 |
+| 🥇 LoRA 微调 | Day 4-6 | 数据集准备、Unsloth/Axolotl 微调、评估对比 |
+| 🥈 高级 RAG | Day 7-9 | Self-RAG、CRAG、Agentic RAG、GraphRAG |
+| 🥈 MCP 开发 | Day 10-11 | MCP Server/Client 开发、工具链集成 |
+| 🥉 Prompt 工程进阶 | Day 12-13 | DSPy 声明式编程、生产级 Prompt |
+| 🥉 AI 安全 | Day 14-15 | Prompt Injection 防护、PII 脱敏、红队测试 |
 
 ---
 
@@ -74,19 +119,15 @@ ai-learning/
 ├── 02-进阶能力/             (Day 8-12 Python)
 ├── 03-应用实战/             (Day 13-15 Python)
 ├── 阶段4-Java-AI应用开发/   (Day 16-21 Java)
-│   ├── day16-*.md ~ day21-*.md
-│   └── code/day16/ ~ code/day21/
 ├── 阶段5-RAG工程化/         (Day 22-26 Java)
-│   ├── day22-*.md ~ day26-*.md
-│   └── code/day22/ ~ code/day26/
-├── 阶段6-Agent与工作流/     (Day 27-31+ Java)
-│   ├── day27-*.md ~ day31-*.md
-│   └── code/day27/ ~ code/day31/
-├── 阶段7-LLMOps/            (Day 33-37 预留)
-├── 阶段8-综合项目/          (Day 38-42 预留)
-├── 阶段9-职业冲刺/          (Day 43-45 预留)
-├── Java-AI工程化转型_综合学习计划.md  ← 详细计划
-└── sync_to_nas.sh / sync_to_github.sh
+├── 阶段6-Agent与工作流/     (Day 27-32 Java)
+├── 阶段7-LLMOps/            (Day 33-37 Java)
+├── 阶段8-综合项目/          (Day 38-42 Java)
+├── 阶段9-职业冲刺/          (Day 43-45 + 15天进阶计划)
+├── Java-AI工程化转型_综合学习计划.md
+├── AI工程化进阶计划_15天.md
+├── sync_to_nas.sh
+└── sync_to_github.sh
 ```
 
 ---
@@ -95,15 +136,17 @@ ai-learning/
 
 | 类别 | 技术 |
 |------|------|
-| **AI 框架** | Spring AI 1.0.0-M6, LangChain4j |
-| **运行时** | Java 21, Spring Boot 3.4.4 |
-| **构建** | Maven 3.8+ |
+| **AI 框架** | Spring AI 1.0.0-M6, LangChain4j, DSPy |
+| **运行时** | Java 21, Spring Boot 3.4.4, Python 3.11 |
+| **构建** | Maven 3.8+, uv |
 | **数据库** | PostgreSQL + PgVector, Elasticsearch |
 | **工作流** | Dify (Docker), 自研 DAG 引擎 |
+| **微调** | Unsloth, Axolotl, TRL |
 | **部署** | Docker, Docker Compose |
-| **可观测** | Prometheus / Micrometer (计划中) |
-| **AI 模型** | DeepSeek V4 Flash/Pro, OpenAI 兼容 |
-| **嵌入** | sentence-transformers, Ollama |
+| **可观测** | Prometheus / Micrometer / Grafana |
+| **AI 模型** | DeepSeek V4 Flash/Pro, Ollama 本地模型 |
+| **嵌入** | sentence-transformers, Ollama 嵌入模型 |
+| **协议** | MCP (Model Context Protocol) |
 
 ---
 
@@ -113,14 +156,17 @@ ai-learning/
 # 查看完整学习计划
 cat Java-AI工程化转型_综合学习计划.md
 
-# 运行最新 Java 项目 (Day 31 DAG 引擎)
-cd 阶段6-Agent与工作流/code/day31/dag-engine
+# 查看进阶计划
+cat AI工程化进阶计划_15天.md
+
+# 运行最新 Java 项目 (Day 42 综合项目)
+cd 阶段8-综合项目/code/day42
 bash start.sh
 
 # 运行 Python 对照 Demo
-cd 阶段6-Agent与工作流/code/day31/python
+cd 03-应用实战/code/day15
 pip install -r requirements.txt
-python3 dag_demo.py
+python3 -m knowledge_base.main qa
 ```
 
 ---
