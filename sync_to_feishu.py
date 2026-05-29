@@ -24,8 +24,8 @@ APP_SECRET = 'EIy92uxSScnqYyfrBHkhMbF4qSw6SVjO'
 
 STATE_FILE = os.path.expanduser('~/ai-learning/feishu_state.json')
 LOCAL_ROOT = os.path.expanduser('~/ai-learning')
-DRIVE_ROOT_TOKEN = 'QhA7fYs0vlclUIdI1oScGnOen2g'
-DRIVE_ROOT_NAME = 'AI学习'
+DRIVE_ROOT_TOKEN = 'VXzPfCAASlZUopdwIXWcAd2QnHg'
+DRIVE_ROOT_NAME = 'ai-learning'
 
 # ========================================
 # 文件清单：需要上传哪些文件
